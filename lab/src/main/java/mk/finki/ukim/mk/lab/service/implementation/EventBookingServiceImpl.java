@@ -6,6 +6,9 @@ import mk.finki.ukim.mk.lab.repository.EventBookingRepository;
 import mk.finki.ukim.mk.lab.service.EventBookingService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class EventBookingServiceImpl implements EventBookingService {
 
@@ -22,5 +25,17 @@ public class EventBookingServiceImpl implements EventBookingService {
         eventBookingRepository.addBooking(newBooking);
 
         return newBooking;
+    }
+
+    @Override
+    public List<EventBooking> listForAttendee(String attendeeName) {
+        return eventBookingRepository.listAllBookings().stream()
+                .filter(booking -> booking.getAttendeeName().equals(attendeeName))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Object> search(String text) {
+        return eventBookingRepository.keywordSearch(text);
     }
 }
