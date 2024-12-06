@@ -1,5 +1,6 @@
 package mk.finki.ukim.mk.lab.service;
 
+
 import mk.finki.ukim.mk.lab.model.EventBooking;
 
 import java.util.List;
@@ -9,5 +10,5 @@ public interface EventBookingService{
 
     List<EventBooking> listForAttendee(String attendeeName);
 
-    List<Object> search(String text);
+    List<EventBooking> search(String text);
 }

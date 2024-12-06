@@ -1,5 +1,6 @@
 package mk.finki.ukim.mk.lab.web.controller;
 
+
 import mk.finki.ukim.mk.lab.model.Event;
 import mk.finki.ukim.mk.lab.service.EventBookingService;
 import mk.finki.ukim.mk.lab.service.EventService;
@@ -75,7 +76,11 @@ public class EventController {
                             Model model) {
 
         if (this.eventService.findById(id).isPresent()) {
-            this.eventService.editEvent(id, name, description, popularityScore, location);
+            try {
+                this.eventService.editEvent(id, name, description, popularityScore, location);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
             return "redirect:/events";
         }
@@ -97,6 +102,7 @@ public class EventController {
 
         return "details-event";
     }
-}
 
-// detali i bookings za sekoj event
+
+    /// TODO Fix filter add filtering by location
+}

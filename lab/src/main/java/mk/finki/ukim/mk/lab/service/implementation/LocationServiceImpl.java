@@ -1,9 +1,10 @@
 package mk.finki.ukim.mk.lab.service.implementation;
 
 import mk.finki.ukim.mk.lab.model.Location;
-import mk.finki.ukim.mk.lab.repository.LocationRepository;
+import mk.finki.ukim.mk.lab.repository.jpa.LocationRepository;
 import mk.finki.ukim.mk.lab.service.LocationService;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
 
 import java.util.List;
 
@@ -19,4 +20,5 @@ public class LocationServiceImpl implements LocationService {
     public List<Location> findAll() {
         return this.locationRepository.findAll();
     }
+
 }
