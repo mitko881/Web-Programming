@@ -1,0 +1,281 @@
+<!--<html lang="en" xmlns:sec="">-->
+<!--<head>-->
+<!--    <meta charset="utf-8">-->
+<!--    <title>Event Booking page - Welcome and choose an Event</title>-->
+<!--    <style type="text/css">-->
+<!--        body {-->
+<!--            width: 1000px;-->
+<!--            margin: auto;-->
+<!--        }-->
+
+<!--        .text-danger {-->
+<!--            color: red;-->
+<!--        }-->
+
+<!--        .b {-->
+<!--            display: inline;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<header>-->
+<!--    <h1>Welcome to our Event Booking App</h1>-->
+<!--</header>-->
+<!--<main>-->
+<!--    <th:block th:if="${hasError}">-->
+<!--        <div th:text="${error}" class="text-danger"></div>-->
+<!--    </th:block>-->
+
+<!--    <h2>Filter Events:</h2>-->
+<!--    <label for="filterText">Filter by name or description:</label>-->
+<!--    <input type="text" id="filterText" name="filterText">-->
+
+<!--    <label for="minRating">Minimum Rating:</label>-->
+<!--    <input type="number" id="minRating" name="minRating" min="0" max="5" step="0.1">-->
+
+<!--    <br>-->
+<!--    <input type="submit" name="action" value="Filter">-->
+<!--    <input type="submit" name="action" value="Reset">-->
+
+<!--    <br>-->
+<!--    <br>-->
+
+<!--    <th:block sec:authorize="hasRole('ADMIN')">-->
+<!--        <form th:action="@{'/events/add'}" th:method="GET">-->
+<!--            <button type="submit">ADD NEW EVENT</button>-->
+<!--        </form>-->
+<!--    </th:block>-->
+
+<!--    <form th:action="@{'/eventBooking'}" th:method="GET">-->
+<!--        <h2>Enter your full name:</h2>-->
+<!--        <input type="text" name="attendeeName">-->
+
+
+<!--        <button type="submit">MAKE RESERVATION</button>-->
+<!--        <input type="number" name="numTickets" min="1" max="10" placeholder="1">-->
+<!--        <h2>Event list:</h2>-->
+<!--        <ul>-->
+<!--            <li th:each="event : ${events}">-->
+<!--                <label>-->
+<!--                    <input type="radio" name="event" th:value="${event.getId()}">-->
+<!--                    Name: <span th:text="${event.getName()}"></span>,-->
+<!--                    Description: <span th:text="${event.getDescription()}"></span>-->
+<!--                    Rating: <span th:text="${event.getPopularityScore()}"></span>-->
+<!--                    Location: <span th:text="${event.getLocation()}"></span>-->
+<!--                </label>-->
+<!--                <br>-->
+<!--                <th:block sec:authorize="hasRole('ADMIN')">-->
+
+<!--                    <form class="b" th:action="@{'/events/edit/{id}' (id=${event.getId()})}" th:method="GET">-->
+<!--                        <button type="submit">Edit</button>-->
+<!--                    </form>-->
+
+<!--                    <form class="b" th:action="@{'/events/delete/{id}' (id=${event.getId()})}" th:method="POST">-->
+<!--                        <button type="submit">Delete</button>-->
+<!--                    </form>-->
+
+<!--                    <form class="b" th:action="@{'/events/details/{id}' (id=${event.getId()})}" th:method="GET">-->
+<!--                        <button type="submit">Details</button>-->
+<!--                    </form>-->
+
+<!--                </th:block>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </form>-->
+<!--</main>-->
+<!--</body>-->
+<!--</html>-->
+<html lang="en" xmlns:sec="">
+<head>
+    <meta charset="utf-8">
+    <title>Event Booking - Choose Your Event</title>
+    <style type="text/css">
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #67b26f, #4ca2cd);
+            color: white;
+            text-align: center;
+            padding: 3rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 2rem auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: #4ca2cd;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"], input[type="number"], input[type="submit"], button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 1.5rem;
+            background-color: #fff;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        input[type="submit"], button {
+            background-color: #4ca2cd;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        input[type="submit"]:hover, button:hover {
+            background-color: #3c8c9d;
+        }
+
+        .event-list {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .event-item {
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f8f8;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .event-info {
+            margin-bottom: 1rem;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .event-actions form {
+            margin: 0;
+            flex: 1;
+        }
+
+        .text-danger {
+            color: #e74c3c;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive Styling */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            main {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .event-actions {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Welcome to the Event Booking App</h1>
+</header>
+<main>
+    <th:block th:if="${hasError}">
+        <div th:text="${error}" class="text-danger"></div>
+    </th:block>
+
+    <h2>Filter Events:</h2>
+    <label for="filterText">Filter by name or description:</label>
+    <input type="text" id="filterText" name="filterText">
+
+    <label for="minRating">Minimum Rating:</label>
+    <input type="number" id="minRating" name="minRating" min="0" max="5" step="0.1">
+
+    <input type="submit" name="action" value="Filter">
+    <input type="submit" name="action" value="Reset">
+
+    <th:block sec:authorize="hasRole('ADMIN')">
+        <form th:action="@{'/events/add'}" th:method="GET">
+            <button type="submit">Add New Event</button>
+        </form>
+    </th:block>
+
+    <form th:action="@{'/eventBooking'}" th:method="GET">
+        <h2>Enter Your Full Name:</h2>
+        <input type="text" name="attendeeName">
+
+        <h2>Number of Tickets:</h2>
+        <input type="number" name="numTickets" min="1" max="10" placeholder="1">
+
+        <button type="submit">Make Reservation</button>
+
+        <h2>Event List:</h2>
+        <ul class="event-list">
+            <li th:each="event : ${events}" class="event-item">
+                <div class="event-info">
+                    <label>
+                        <input type="radio" name="event" th:value="${event.getId()}">
+                        Name: <span th:text="${event.getName()}"></span><br>
+                        Description: <span th:text="${event.getDescription()}"></span><br>
+                        Rating: <span th:text="${event.getPopularityScore()}"></span><br>
+                        Location: <span th:text="${event.getLocation()}"></span>
+                    </label>
+                </div>
+                <div class="event-actions">
+                    <th:block sec:authorize="hasRole('ADMIN')">
+                        <form class="b" th:action="@{'/events/edit/{id}' (id=${event.getId()})}" th:method="GET">
+                            <button type="submit">Edit</button>
+                        </form>
+
+                        <form class="b" th:action="@{'/events/delete/{id}' (id=${event.getId()})}" th:method="POST">
+                            <button type="submit">Delete</button>
+                        </form>
+
+                        <form class="b" th:action="@{'/events/details/{id}' (id=${event.getId()})}" th:method="GET">
+                            <button type="submit">Details</button>
+                        </form>
+                    </th:block>
+                </div>
+            </li>
+        </ul>
+    </form>
+</main>
+</body>
+</html>
